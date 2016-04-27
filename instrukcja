@@ -1,0 +1,151 @@
+Projekt: Teoria kompilacji i kompilatory
+========================================
+
+Projekt składa się z kilku elementów naświetlających poszczególne elementy projektowania i implementacji kompilatorów. Do stworzenia jest kompilator prostych wyrażeń matematycznych do listy rozkazów wykonywalnych przez proste środowisko uruchomieniowe.
+
+Zarys zadania z punktu widzenia przepływu danych:
+
+1. Wejście kompilatora - ciąg znaków: `1 + 2 * 3`
+2. Skaner - analiza leksykalna
+3. Ciąg tokenów: `[1] [+] [2] [*] [3]`
+4. Parser - analiza syntaktyczna
+5. Drzewo syntaktyczne: `[+ [1] [* [2] [3]]]`
+6. Generacja kodu
+7. Ciąg instrukcji: `[put 1] [put 2] [put 3] [mul] [add] [end]`
+8. Środowisko uruchomieniowe - wykonanie instrukcji
+9. Wyjście programu - ciąg znaków: `7`
+
+
+1. Środowisko uruchomieniowe
+----------------------------
+
+Pierwsze zadanie to stworzenie prostego środowiska uruchomieniowego - programu wykonującego programy. Programy te będą składać się z odpowiednio zakodowanych rozkazów i danych. W najprostszej wersji będą umożliwiać wyłącznie dodawanie i mnożenie liczb całkowitych, czyli obliczać pewne wyrażenia. Będzie to docelowy język i architektura powstającego kompilatora.
+
+Kodowanie - dostępne rozkazy:
+
+  * `end`
+  * `put N`
+  * `add`
+  * `mul`
+
+Działanie rozkazów:
+
+  * `put N` - wrzuć liczbę na stos obliczeń
+  * `add`, `mul` - weź ze stosu dwie ostatnie liczby, dodaj (pomnóż) je i wrzuć na stos wynik
+  * `end` - zakończ program, zwracając wierzchołek stosu jako wynik
+
+### Przykład
+
+Program:
+
+1. `put 1`
+2. `put 2`
+3. `put 3`
+4. `mul`
+5. `add`
+6. `end`
+
+Stos w kolejnych krokach:
+
+1. `1`
+2. `1`, `2`
+3. `1`, `2`, `3`
+4. `1`, `6`
+5. `7`
+6.
+
+Czyli wynik to liczba *7*.
+
+
+2. Generator kodu
+-----------------
+
+Drugi element "od końca". Kolejność motywowana psychologią - miło jest widzieć działający wynik. Idąc od początku, zobaczyć go można by dopiero po napisaniu wszystkiego.
+
+Do zrobienia jest część kompilatora odpowiadająca za zamianę sparsowanego wyrażenia matematycznego na kod programu rozumianego przez zaimplementowany wcześniej automat. Póki co dane wejściowe będą w kodzie programu, natomiast wyjście powinno być faktycznie ciągiem znaków, wczytywanych później przez program automatu.
+
+Wejście dla tego modułu to **drzewo binarne** prostego wyrażenia matematycznego. Np.:
+
+    [+]
+     |-[1]
+     '-[*]
+        |-[2]
+        '-[3]
+
+Odpowiada ono oczywiście wyrażeniu `1 + 2 * 3` z uwzględnioną kolejnością wykonywania działań.
+
+Sposób reprezentacji drzewa w programie jest na razie dowolny, bo i tak później trzeba go będzie dostosować to wyjścia z wcześniejszego etapu kompilacji (czyli z parsowania).
+
+Drzewo może być zakodowane w programie np. tak:
+
+    Node("+", Node(1), Node("*", Node(2), Node(3)))
+
+Zadanie jest w tak naprawdę proste - trzeba rekurencyjnie przejrzeć to drzewo w tzw. kolejności postfiksowej, czyli najpierw dzieci bieżącego węzła a potem on sam. Dla przykładowego drzewa efekt będzie taki:
+
+    1, 2, 3, *, +
+
+Pozostaje tylko zamienić to na sekwencję odpowiednich rozkazów, dodać na końcu `end` i zakodować do bajtów. Przykład jest kompatybilny z przykładem używanym w opisie automatu.
+
+
+3. Parser
+---------
+
+Tutaj oczywiście będzie chodziło o zamianę danych typu `[1] [+] [2] [*] [3]` na drzewo takie jak w przykładzie wyżej. Owe dane wejściowe to tokeny i na razie również będą na sztywno w programie, np. tak:
+
+    [TNum(1), TAdd(), TNum(2), TMul(), TNum(3)]
+
+Parser piszemy (na razie) ręcznie. Ze względu na dużą prostotę przykładu można to zrobić w bardzo mało inteligentny sposób, zalecam jednak trzymanie się myśli, że można to poszerzyć o odejmowanie, dzielenie, potęgowanie (operator łączny od prawej do lewej, w odróżnieniu od poprzednich), nawiasy, zmienne zamiast liczb czy wreszcie funkcje (np. sinus) itp. Na początek jednak radzę spróbować z samym dodawaniem a potem dodać mnożenie. Kluczowe jest oczywiście uwzględnienie kolejności działań.
+
+Mniej lub bardziej jawnie, lista wejściowych tokenów powinna kończyć się symbolem końca wejścia. Z reguły sporo to parserowi ułatwia. Tutaj również radzę trzymać się myśli, że czynników mnożenia i składników dodawania może być dowolnie dużo i należy podejmować decyzję o złożeniu ich w drzewo najwcześniej, jak to możliwe. Gwoli ścisłości, wejście typu `[1] [+] [2] [+] [3]`, powinno dać drzewo takie:
+
+    [+]
+     |-[1]
+     '-[+]
+        |-[2]
+        '-[3]
+
+lub takie:
+
+    [+]
+     |-[+]
+     |  |-[1]
+     |  '-[2]
+     '-[3]
+
+
+4. Skaner
+---------
+
+Ostatni element programu kompilatora. Powinien wczytywać ciąg znaków (np. ASCII) i zamieniać go na ciąg tokenów, ignorując przy tym nieistotne białe znaki. Jest to pewien rodzaj parsowania, bardzo prosty. Najtrudniejszy element to inteligentne sklejenie cyfr i zamiana ich na liczbę.
+
+Przykład: `1+  2*3 +42` powinno zostać zamienione na `[1] [+] [2] [*] [3] + [42]`.
+
+
+5. Generowanie parserów
+-----------------------
+
+Chociażby ze względu na egzamin, dobrze będzie teraz stworzyć generator, za którego pomocą będzie można wygenerować skaner i parser zastępujące te napisane wcześniej.
+
+Na to zadanie składa się wiele elementów:
+
+1. Sposób specyfikacji tokenów i gramatyki
+2. Algorytm generowania tablic parsowania na podstawie gramatyki
+3. Parser działający w oparciu o te tablice
+
+Najtrudniejszy oczywiście jest punkt drugi, praktycznie łączący się z trzecim. To własnie tutaj pojawia się algorytmiczna inteligencja parsowania. Tutaj wykorzystuje się teorię języków formalnych i automatów skończonych. Stosowane algorytmy (bądź ich właściwości) definiują różne klasy gramatyk. Najprostsza jest klasa *LL(1)* i właśnie o nią się oprzemy. Jak stworzyć odpowiadający jej automat już się uczyliście, więc tak naprawdę wystarczy taki automat zaimplementować a następnie lekko zmodyfikować, by poza akceptowaniem *słowa* (*zdania*) budował jego drzewo składniowe (drzewo parsowania). Symbole terminalne to tokeny, zaś symbolom nieterminalnym powinny odpowiadać typy węzłów w drzewie. Instrukcji nie daję, bo w internecie można ich znaleźć sporo.
+
+Do notacji gramatyk używa się najczęściej składni typu (E)BNF, jednak dopuszczam zapisywanie ich w kodzie generatora, w dowolny sposób, np.:
+
+    ts = ["num", "add", "mul"]
+    nts = ["Expr", "Term"]
+    rules = [
+        ["Expr", "Term"],
+        ["Expr", "Term", "add", "Expr"],
+        ["Term", "num"],
+        ["Term", "num", "mul", "Term"]
+    ]
+    starter = "Expr"
+
+Może się przydać:
+https://www.google.com/search?q=LL+parser
+https://www.google.com/search?q=first+follow
