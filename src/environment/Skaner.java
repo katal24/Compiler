@@ -7,21 +7,12 @@ import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * Created by dawid on 27.04.16.
- */
 public class Skaner {
 
 
-    private static List<String> tokens = new LinkedList<String>();
+    static List<String> tokens = new LinkedList<>();
     static String temp = null;
     static boolean isSth = false;
-    String result;
-
-    public static void main(String[] args){
-        read("plikDoSkanera");
-        System.out.println(generateResult());
-    }
 
     public static String generateResult(){
         StringBuilder result = new StringBuilder();
@@ -30,6 +21,10 @@ public class Skaner {
         }
         result.deleteCharAt(result.length()-1);
         return result.toString();
+    }
+
+    public static List<String> getTokens(){
+        return tokens;
     }
 
     public static void temp(String s){

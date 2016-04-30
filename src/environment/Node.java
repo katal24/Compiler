@@ -29,6 +29,4 @@ public class Node{
         this.right = right;
     }
 
-
-    //gettery settery
 }

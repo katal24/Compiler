@@ -8,13 +8,14 @@ import java.util.Stack;
 
 public class Run {
 
-    private static Stack<Integer> stack = new Stack<Integer>();
+    private static Stack<Integer> stack;
 
-    public static void main(String[] args){
-        read("plikWejsciowy");
+    public Run(){
+        stack = new Stack<Integer>();
     }
 
-    public static void read(String filename){
+    public static void runCode(){
+        String filename = "polecenia";
         Path path = Paths.get(filename);
         try {
             Files.lines(path).forEach(s ->  {
