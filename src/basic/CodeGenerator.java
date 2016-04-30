@@ -1,4 +1,4 @@
-package environment;
+package basic;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -9,20 +9,20 @@ import java.io.UnsupportedEncodingException;
  */
 public class CodeGenerator {
 
-    static PrintWriter writer;
+    PrintWriter writer;
 
     public CodeGenerator() throws FileNotFoundException, UnsupportedEncodingException {
         writer = new PrintWriter("polecenia", "UTF-8");
 
     }
 
-    public static void generate(Node root){
+    public void generate(Node root){
          searchTree(root);
          printToFile("end");
          writer.close();
     }
 
-    public static void searchTree(Node tree){
+    public void searchTree(Node tree){
 
         if(tree!=null){
             searchTree(tree.getLeft());
@@ -31,7 +31,7 @@ public class CodeGenerator {
         }
     }
 
-    public static void printToFile(String token){
+    public void printToFile(String token){
         System.out.println(token);
         String newToken = getChar(token);
         if(newToken.matches("\\d")){
@@ -48,7 +48,7 @@ public class CodeGenerator {
         }
     }
 
-    public static String getChar(String token){
+    public String getChar(String token){
         return token.substring(1,token.length()-1);
     }
 }

@@ -1,4 +1,4 @@
-package environment;
+package basic;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -10,11 +10,16 @@ import java.util.List;
 public class Skaner {
 
 
-    static List<String> tokens = new LinkedList<>();
-    static String temp = null;
-    static boolean isSth = false;
+    List<String> tokens = new LinkedList<>();
+    String temp = null;
+    boolean isSth = false;
 
-    public static String generateResult(){
+
+    public Skaner(String filename){
+        read(filename);
+    }
+
+    public String generateResult(){
         StringBuilder result = new StringBuilder();
         for(String token : tokens){
             result.append(token + " ");
@@ -23,11 +28,11 @@ public class Skaner {
         return result.toString();
     }
 
-    public static List<String> getTokens(){
+    public List<String> getTokens(){
         return tokens;
     }
 
-    public static void temp(String s){
+    public void temp(String s){
         if(temp==null){
             temp = s;
         } else
@@ -35,13 +40,13 @@ public class Skaner {
         isSth = true;
     }
 
-    public static void saveTemp(){
+    public void saveTemp(){
         pack(temp);
         temp = null;
         isSth = false;
     }
 
-    public static void read(String filename){
+    public void read(String filename){
         Path path = Paths.get(filename);
         String temp = "";
         try {
@@ -69,7 +74,7 @@ public class Skaner {
         }
     }
 
-    public static void pack(String s){
+    public void pack(String s){
         tokens.add("[" + s + "]");
     }
 

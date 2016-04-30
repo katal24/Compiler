@@ -1,4 +1,4 @@
-package environment;
+package basic;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -8,13 +8,13 @@ import java.util.Stack;
 
 public class Run {
 
-    private static Stack<Integer> stack;
+    private Stack<Integer> stack;
 
     public Run(){
         stack = new Stack<Integer>();
     }
 
-    public static void runCode(){
+    public void runCode(){
         String filename = "polecenia";
         Path path = Paths.get(filename);
         try {
@@ -45,7 +45,7 @@ public class Run {
         }
     }
 
-    public static void calculate(String s){
+    public void calculate(String s){
         int x = stack.pop();
         int y = stack.pop();
         int result = 0;

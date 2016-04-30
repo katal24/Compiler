@@ -1,12 +1,12 @@
-package environment;
+package basic;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Parser {
 
-    static ArrayList<String> tokens;
-    static Node root;
+    ArrayList<String> tokens;
+    Node root;
 
     public Parser(List<String> tokenList){
         tokens = new ArrayList<String>();
@@ -15,13 +15,14 @@ public class Parser {
         }
     }
 
-   public static void parse(){
+   public Node parse(){
         root = new Node();
         buildTree(root, tokens, 0, tokens.size());
         display(root, 0);
+        return root;
     }
 
-    static void buildTree(Node r, List<String> arr, int start, int end) {
+    void buildTree(Node r, List<String> arr, int start, int end) {
         int ind = findMultiplication(arr, start, end);
         System.out.println("start" + start + "end" + end);
         if (ind == -1) {
@@ -60,21 +61,21 @@ public class Parser {
 
     }
 
-    static int findMultiplication(List<String> arr, int start, int end) {
+    int findMultiplication(List<String> arr, int start, int end) {
         for (int i = start; i < end; i++) {
             if (arr.get(i).equals("[*]")) return i;
         }
         return -1;
     }
 
-    static int findAddition(List<String> arr, int start, int end) {
+    int findAddition(List<String> arr, int start, int end) {
         for (int i = start; i < end; i++) {
             if (arr.get(i).equals("[+]")) return i;
         }
         return -1;
     }
 
-    static void display(Node n, int level) {
+    void display(Node n, int level) {
         if(n==null) return;
         for (int i = 0; i < level; i++) {
             System.out.print(" ");
@@ -88,7 +89,7 @@ public class Parser {
 
 
 
-    public static Node getRoot() {
+    public Node getRoot() {
         return root;
     }
 

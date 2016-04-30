@@ -116,7 +116,9 @@ lub takie:
 4. Skaner
 ---------
 
-Ostatni element programu kompilatora. Powinien wczytywać ciąg znaków (np. ASCII) i zamieniać go na ciąg tokenów, ignorując przy tym nieistotne białe znaki. Jest to pewien rodzaj parsowania, bardzo prosty. Najtrudniejszy element to inteligentne sklejenie cyfr i zamiana ich na liczbę.
+Ostatni element programu kompilatora. Powinien wczytywać ciąg znaków (np. ASCII) i zamieniać go na ciąg tokenów, ignorując przy tym
+nieistotne białe znaki. Jest to pewien rodzaj parsowania, bardzo prosty. Najtrudniejszy element to inteligentne sklejenie cyfr
+i zamiana ich na liczbę.
 
 Przykład: `1+  2*3 +42` powinno zostać zamienione na `[1] [+] [2] [*] [3] + [42]`.
 
@@ -132,7 +134,12 @@ Na to zadanie składa się wiele elementów:
 2. Algorytm generowania tablic parsowania na podstawie gramatyki
 3. Parser działający w oparciu o te tablice
 
-Najtrudniejszy oczywiście jest punkt drugi, praktycznie łączący się z trzecim. To własnie tutaj pojawia się algorytmiczna inteligencja parsowania. Tutaj wykorzystuje się teorię języków formalnych i automatów skończonych. Stosowane algorytmy (bądź ich właściwości) definiują różne klasy gramatyk. Najprostsza jest klasa *LL(1)* i właśnie o nią się oprzemy. Jak stworzyć odpowiadający jej automat już się uczyliście, więc tak naprawdę wystarczy taki automat zaimplementować a następnie lekko zmodyfikować, by poza akceptowaniem *słowa* (*zdania*) budował jego drzewo składniowe (drzewo parsowania). Symbole terminalne to tokeny, zaś symbolom nieterminalnym powinny odpowiadać typy węzłów w drzewie. Instrukcji nie daję, bo w internecie można ich znaleźć sporo.
+Najtrudniejszy oczywiście jest punkt drugi, praktycznie łączący się z trzecim. To własnie tutaj pojawia się algorytmiczna inteligencja
+ parsowania. Tutaj wykorzystuje się teorię języków formalnych i automatów skończonych. Stosowane algorytmy (bądź ich właściwości)
+ definiują różne klasy gramatyk. Najprostsza jest klasa *LL(1)* i właśnie o nią się oprzemy. Jak stworzyć odpowiadający jej automat
+ już się uczyliście, więc tak naprawdę wystarczy taki automat zaimplementować a następnie lekko zmodyfikować, by poza akceptowaniem
+ *słowa* (*zdania*) budował jego drzewo składniowe (drzewo parsowania). Symbole terminalne to tokeny, zaś symbolom nieterminalnym
+ powinny odpowiadać typy węzłów w drzewie. Instrukcji nie daję, bo w internecie można ich znaleźć sporo.
 
 Do notacji gramatyk używa się najczęściej składni typu (E)BNF, jednak dopuszczam zapisywanie ich w kodzie generatora, w dowolny sposób, np.:
 

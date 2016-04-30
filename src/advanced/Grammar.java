@@ -4,10 +4,12 @@ import java.util.ArrayList;
 public class Grammar {
 
 
-    ArrayList<String> terminalSymbols ; //symboole terminalne
-    ArrayList<String> nonTerminalSymbols ;  //nieterminalne duze litery zmiennne
-    ArrayList<Rule> rules;
-    String starter = "Expr";
+    static ArrayList<String> terminalSymbols = new ArrayList<>(); //symboole terminalne
+    static ArrayList<String> nonTerminalSymbols = new ArrayList<>();  //nieterminalne duze litery zmiennne
+    static ArrayList<Rule> rules;
+    static String starter = "Expr";
+
+
 
     public ArrayList<String> getNonTerminalSymbols() {
         return nonTerminalSymbols;
