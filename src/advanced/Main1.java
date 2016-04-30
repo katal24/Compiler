@@ -1,7 +1,7 @@
 package advanced;
 
 /**
- * Created by dawid on 30.04.16.
+ * To jest nowy projekt
  */
 public class Main1 {
 
